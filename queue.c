@@ -36,6 +36,19 @@ queue_t *q_new()
 void q_free(queue_t *q)
 {
     /* How about freeing the list elements and the strings? */
+    if (q == NULL) {
+        return;
+    }
+
+    list_ele_t *node;
+
+    while (q->head) {
+        node = q->head;
+        q->head = node->next;
+        free(node->value);
+        free(node);
+    }
+
     /* Free queue structure */
     free(q);
 }
@@ -61,7 +74,6 @@ bool q_insert_head(queue_t *q, char *s)
     /* Don't forget to allocate space for the string and copy it */
 
     newh->value = malloc(sizeof(char) * strlen(s) + 1);
-    newh->next = malloc(sizeof(list_ele_t));
     strcpy(newh->value, s);
 
     /* What if either call to malloc returns NULL? */
