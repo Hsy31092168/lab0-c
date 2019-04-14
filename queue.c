@@ -94,6 +94,7 @@ bool q_insert_head(queue_t *q, char *s)
 
     newh->next = q->head;
     q->head = newh;
+    q->size++;
     return true;
 }
 
@@ -108,8 +109,35 @@ bool q_insert_head(queue_t *q, char *s)
 bool q_insert_tail(queue_t *q, char *s)
 {
     /* You need to write the complete code for this function */
+    list_ele_t *newh;
+    if (q == NULL) {
+        return false;
+    }
+
+    newh = malloc(sizeof(list_ele_t));
+    newh->next = NULL;
+    newh->value = malloc(sizeof(char) * strlen(s) + 1);
+    strcpy(newh->value, s);
+
+    if (newh == NULL) {
+        printf("Allocate space failed\n");
+        return false;
+    }
+
+
+    if (q->size == 0) {
+        newh->next = NULL;
+        q->head = newh;
+        q->tail = newh;
+        q->size++;
+
+        return true;
+    }
+
+    q->tail->next = newh;
+    q->size++;
     /* Remember: It should operate in O(1) time */
-    return false;
+    return true;
 }
 
 /*
@@ -123,7 +151,19 @@ bool q_insert_tail(queue_t *q, char *s)
 bool q_remove_head(queue_t *q, char *sp, size_t bufsize)
 {
     /* You need to fix up this code. */
+    if (q == NULL) {
+        return false;
+    }
+    list_ele_t *tmp;
+    tmp = q->head;
+    if (sp) {
+        memset(sp, '\0', bufsize);
+        strncpy(sp, tmp->value, bufsize - 1);
+    }
     q->head = q->head->next;
+    q->size--;
+    free(tmp->value);
+    free(tmp);
     return true;
 }
 
@@ -135,7 +175,7 @@ int q_size(queue_t *q)
 {
     /* You need to write the code for this function */
     /* Remember: It should operate in O(1) time */
-    return 0;
+    return q->size;
 }
 
 /*
